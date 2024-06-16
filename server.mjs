@@ -1,8 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import Blockchain from "./blockchain/models/Blockchain.mjs"
 import cors from 'cors';
-//import blockRouter from "./routes/block-routes.mjs";
-//import blockchainRouter from "./blockchain/routes/blockchain-routes.mjs";
+import blockRouter from "./blockchain/routes/block-routes.mjs";
+import blockchainRouter from "./blockchain/routes/blockchain-routes.mjs";
 
 
 dotenv.config({path:"./config/config.env"});
@@ -14,6 +15,8 @@ const pubnubKeys = {
     userId: process.env.USER_ID
 };
 
+export const blockchain = new Blockchain();
+
 const app = express();
 app.use (cors());
 app.use(express.json());
@@ -23,8 +26,8 @@ const ROOT_NODE = `http://localhost:${DEFAULT_PORT}`;
 
 let NODE_PORT;
 
-//app.use("/api/v1/blockchain", blockchainRouter);
-//app.use("/api/v1/block", blockRouter);
+app.use("/api/v1/blockchain", blockchainRouter);
+app.use("/api/v1/block", blockRouter);
 
 
 const PORT = NODE_PORT || DEFAULT_PORT;
