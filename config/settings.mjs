@@ -6,6 +6,7 @@ export const INITIAL_DIFFICULTY = 2;
 
 export const GENESIS_DATA = {
     timestamp: Date.now(), // timestamp: 1,
+    blockIndex: 0,
     lastHash: "0",
     hash: "0",
     difficulty: INITIAL_DIFFICULTY,
