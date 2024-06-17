@@ -33,7 +33,5 @@ export const getWalletBalance = ( req, res, next) => {
 export const mineTransactions = ( req, res, next) => {
     const miner = new Miner({ blockchain, wallet, transactionPool})
 
-    miner.mineTransactions();
-
     res.status(200).json({ success: true, statusCode: 200, data: "Transactions mined"});
 }
