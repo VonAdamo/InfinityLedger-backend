@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { verifySignature } from "../utils/crypto-lib.mjs";
-import { REWARD_INPUT, MINING_REWARD } from "../../config/settings.mjs";
+import { REWARD_ADDRESS, MINING_REWARD } from "../../config/settings.mjs";
 
 export default class Transaction {
     constructor({ sender, recipient, amount, inputMap, outputMap}) {

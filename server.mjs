@@ -4,6 +4,8 @@ import Blockchain from "./blockchain/models/Blockchain.mjs"
 import cors from 'cors';
 import blockRouter from "./blockchain/routes/block-routes.mjs";
 import blockchainRouter from "./blockchain/routes/blockchain-routes.mjs";
+import TransactionPool from './blockchain/models/TransactionPool.mjs';
+import Wallet from './blockchain/models/Wallet.mjs';
 
 
 dotenv.config({path:"./config/config.env"});
@@ -16,6 +18,8 @@ const pubnubKeys = {
 };
 
 export const blockchain = new Blockchain();
+export const transactionPool = new TransactionPool();
+export const wallet = new Wallet();
 
 const app = express();
 app.use (cors());
