@@ -57,7 +57,7 @@ export default class PubNubServer {
                         if (!this.transactionPool.transactionExists({
                             address: this.wallet.publicKey,
                         })) {
-                            this.transactionPool.addTTransaction(msg);
+                            this.transactionPool.addTransaction(msg);
                         }
                         break;
                     case CHANNELS.NETWORK:
