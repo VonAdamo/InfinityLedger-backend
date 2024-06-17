@@ -23,6 +23,7 @@ export default class Block {
         let { difficulty } = lastBlock;
         let hash, timestamp;
         let nonce = 0;
+        let blockIndex = lastBlock.blockIndex + 1;
 
         do {
             nonce++;

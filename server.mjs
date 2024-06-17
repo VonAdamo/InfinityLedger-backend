@@ -6,7 +6,8 @@ import Wallet from './blockchain/models/Wallet.mjs';
 import blockRouter from "./blockchain/routes/block-routes.mjs";
 import blockchainRouter from "./blockchain/routes/blockchain-routes.mjs";
 import transactionRouter from "./blockchain/routes/transaction-routes.mjs";
-import ErrorHandler from './blockchain/middleware/errorHandler.mjs';
+import ErrorResponse from './blockchain/utils/ErrorResponseModel.mjs';
+import errorHandler from './blockchain/middleware/errorHandler.mjs';
 import PubNubServer from "./pubnub-server.mjs";
 import cors from 'cors';
 
@@ -44,14 +45,9 @@ app.use("/api/v1/wallet", transactionRouter);
 
 
 app.all("*", (req, res, next) => {
-    next(new ErrorHandler(`${req.originalUrl} route not found`, 404));
+    next(new ErrorResponse(`${req.originalUrl} route not found`, 404));
 });  
-app.use(ErrorHandler);
-
-/* // Get the blockchain, transaction pool, and wallet, and return them as JSON, respectively, to the client.
-app.get("/api/v1/transaction-pool-map", (req, res) => {
-    res.json(transactionPool.transactionMap);
-}); */
+app.use(errorHandler);
 
 const synchronizeNetwork = async () => {
     let response = await fetch(`${ROOT_NODE}/api/v1/blockchain`);
