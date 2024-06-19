@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 router.route("/transaction").post(addTransaction);
-router.route("/tranasactions").get(getTransactionPool);
+router.route("/transactions").get(getTransactionPool);
 router.route("/balance").get(getWalletBalance);
 router.route("/mine").get(mineTransactions);
 
