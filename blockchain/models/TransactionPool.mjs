@@ -5,7 +5,7 @@ export default class TransactionPool {
         this.transactionMap = {};
     }
 
-    addTransaction ({ transaction}) {
+    addTransaction (transaction) {
         this.transactionMap[transaction.id] = transaction;
     };
 
