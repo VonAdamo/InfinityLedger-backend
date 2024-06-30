@@ -1,18 +1,23 @@
-import express from 'express';
-import dotenv from 'dotenv';
+import express from "express";
+import dotenv from "dotenv";
+import {connectDb} from "./config/mongo.mjs";
+import colors from "colors";
+import morgan from "morgan";
 import Blockchain from "./blockchain/models/Blockchain.mjs"
-import TransactionPool from './blockchain/models/TransactionPool.mjs';
-import Wallet from './blockchain/models/Wallet.mjs';
+import TransactionPool from "./blockchain/models/TransactionPool.mjs";
+import Wallet from "./blockchain/models/Wallet.mjs";
+import userRouter from "./auth/routes/user-routes.mjs";
 import blockRouter from "./blockchain/routes/block-routes.mjs";
 import blockchainRouter from "./blockchain/routes/blockchain-routes.mjs";
 import transactionRouter from "./blockchain/routes/transaction-routes.mjs";
-import ErrorResponse from './blockchain/utils/ErrorResponseModel.mjs';
-import errorHandler from './blockchain/middleware/errorHandler.mjs';
+import ErrorResponse from "./blockchain/utils/errorResponse.mjs";
+import errorHandler from "./blockchain/middleware/error-handler.mjs";
 import PubNubServer from "./pubnub-server.mjs";
-import cors from 'cors';
-
+import cors from "cors";
 
 dotenv.config({path:"./config/config.env"});
+
+connectDb();
 
 const pubnubKeys = {
     publishKey: process.env.PUBLISH_KEY,
@@ -29,6 +34,7 @@ export const pubnubServer = new PubNubServer({ blockchain, transactionPool, wall
 const app = express();
 app.use (cors());
 app.use(express.json());
+app.use(morgan("dev"));
 
 const DEFAULT_PORT = 5001;
 const ROOT_NODE = `http://localhost:${DEFAULT_PORT}`;
@@ -42,12 +48,18 @@ setTimeout(() => {
 app.use("/api/v1/blockchain", blockchainRouter);
 app.use("/api/v1/block", blockRouter);
 app.use("/api/v1/wallet", transactionRouter);
+app,use("/api/v1/users", userRouter);
 
 
 app.all("*", (req, res, next) => {
     next(new ErrorResponse(`${req.originalUrl} route not found`, 404));
 });  
 app.use(errorHandler);
+
+process.on("unhandledRejection", (err, promise) => {
+    console.log(`Error: ${err.message}`.red);
+    server.close(() => process.exit(1));
+});
 
 const synchronizeNetwork = async () => {
     let response = await fetch(`${ROOT_NODE}/api/v1/blockchain`);
