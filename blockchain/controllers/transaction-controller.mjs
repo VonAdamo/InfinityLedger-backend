@@ -1,13 +1,14 @@
 import { transactionPool, wallet, blockchain, pubnubServer} from "../../server.mjs";
 import Miner from "../models/Miner.mjs";
+import Wallet from "../models/Wallet.mjs";
 
 
 //@desc    Add a transaction
 //@route   POST /api/v1/wallet/transaction
 //@access  PRIVATE
 export const addTransaction = ( req, res, next) => {
-
     const { amount, recipient} = req.body;
+
     let transaction = transactionPool.transactionExists({ address: wallet.publicKey});
 
     try {
@@ -29,14 +30,17 @@ export const addTransaction = ( req, res, next) => {
 //@route   GET /api/v1/wallet/transactions
 //@access  PRIVATE
 export const getTransactionPool = ( req, res, next) => {
-    res.status(200).json({ success: true, statusCode: 200, data: "Transaction pool works"});
+    res.status(200).json({ success: true, statusCode: 200, data: transactionPool.transactionMap});
 };
 
 //@desc    Get wallet balance
 //@route   GET /api/v1/wallet/balance
 //@access  PRIVATE
 export const getWalletBalance = ( req, res, next) => {
-    res.status(200).json({ success: true, statusCode: 200, data: "Wallet balance works"});
+    const address = wallet.publicKey;
+    const balance = Wallet.calculateBalance({ chain: blockchain, address}); //blockchain.chain
+
+    res.status(200).json({ success: true, statusCode: 200, data: {address: address, balance: balance,}});
 };
 
 
@@ -44,7 +48,9 @@ export const getWalletBalance = ( req, res, next) => {
 //@route   GET /api/v1/wallet/mine
 //@access  PRIVATE
 export const mineTransactions = ( req, res, next) => {
-    const miner = new Miner({ blockchain, wallet, transactionPool})
+    const miner = new Miner({ blockchain, wallet, transactionPool, pubsub: pubnubServer})
 
-    res.status(200).json({ success: true, statusCode: 200, data: "Transactions mined"});
+    miner.mineTransactions();
+
+    res.status(200).json({ success: true, statusCode: 200, data: "Transactions verified and sent to block to be mined."});
 }

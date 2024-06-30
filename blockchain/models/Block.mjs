@@ -3,7 +3,7 @@ import { GENESIS_DATA, MINE_RATE } from "../../config/settings.mjs";
 import { createHash } from "../utils/crypto-lib.mjs";
 
 export default class Block {
-    constructor(timestamp, blockIndex, lastHash, hash, nonce, difficulty, data) {
+    constructor({timestamp, lastHash, hash, data, nonce, difficulty, blockIndex,}) {
         this.timestamp = timestamp;
         this.blockIndex = blockIndex;
         this.lastHash = lastHash;
@@ -19,7 +19,7 @@ export default class Block {
 
     static mineBlock ({ lastBlock, data }) {
         const lastHash = lastBlock.hash;
-
+        
         let { difficulty } = lastBlock;
         let hash, timestamp;
         let nonce = 0;
@@ -29,11 +29,10 @@ export default class Block {
             nonce++;
             timestamp = Date.now();
             difficulty = Block.adjustDifficulty ({ block: lastBlock, timestamp});
-            hash = createHash(timestamp, blockIndex, lastHash, nonce, difficulty, data);
-        }
-        while (hexToBinary(hash).substring(0, difficulty) !== "0".repeat(difficulty));
+            hash = createHash(timestamp, lastHash, nonce, data, difficulty, blockIndex);
+        } while (hexToBinary(hash).substring(0, difficulty) !== "0".repeat(difficulty));
     
-        return new this({timestamp, blockIndex, lastHash, hash, nonce, difficulty, data});
+        return new this({timestamp, lastHash, hash, data, nonce, difficulty, blockIndex, });
     }
 
     static adjustDifficulty ({ block, timestamp}) {

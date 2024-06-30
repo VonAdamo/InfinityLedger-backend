@@ -34,7 +34,7 @@ export default class TransactionPool {
         return transactions.find((transaction) => transaction.inputMap.address === address); 
     };
 
-    validateTransactions() {
+    validTransactions() {
         const validTransactions = Object.values(this.transactionMap).filter(
             (transaction) => Transaction.validate(transaction)
         );
