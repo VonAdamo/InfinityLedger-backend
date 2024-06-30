@@ -10,8 +10,8 @@ import userRouter from "./auth/routes/user-routes.mjs";
 import blockRouter from "./blockchain/routes/block-routes.mjs";
 import blockchainRouter from "./blockchain/routes/blockchain-routes.mjs";
 import transactionRouter from "./blockchain/routes/transaction-routes.mjs";
-import ErrorResponse from "./blockchain/utils/errorResponse.mjs";
-import errorHandler from "./blockchain/middleware/error-handler.mjs";
+import ErrorResponse from "./blockchain/utils/ErrorResponseModel.mjs";
+import errorHandler from "./blockchain/middleware/errorHandler.mjs";
 import PubNubServer from "./pubnub-server.mjs";
 import cors from "cors";
 
@@ -32,7 +32,7 @@ export const wallet = new Wallet();
 export const pubnubServer = new PubNubServer({ blockchain, transactionPool, wallet, pubnubKeys });
 
 const app = express();
-app.use (cors());
+app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -48,7 +48,7 @@ setTimeout(() => {
 app.use("/api/v1/blockchain", blockchainRouter);
 app.use("/api/v1/block", blockRouter);
 app.use("/api/v1/wallet", transactionRouter);
-app,use("/api/v1/users", userRouter);
+app.use("/api/v1/users", userRouter);
 
 
 app.all("*", (req, res, next) => {
