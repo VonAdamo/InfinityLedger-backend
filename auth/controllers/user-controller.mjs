@@ -4,7 +4,7 @@ import { asyncHandler } from "../middleware/asyncHandler.mjs";
 
 // @desc    Register a new user
 // @route   POST /api/v1/users
-// @access  Public
+// @access  PRIVATE (Admin)
 export const createUser = asyncHandler (async ( req, res, next ) => {
     const user = await User.create(req.body);
 

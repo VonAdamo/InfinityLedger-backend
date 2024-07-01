@@ -7,6 +7,7 @@ import Blockchain from "./blockchain/models/Blockchain.mjs"
 import TransactionPool from "./blockchain/models/TransactionPool.mjs";
 import Wallet from "./blockchain/models/Wallet.mjs";
 import userRouter from "./auth/routes/user-routes.mjs";
+import authRouter from "./auth/routes/auth-routes.mjs";
 import blockRouter from "./blockchain/routes/block-routes.mjs";
 import blockchainRouter from "./blockchain/routes/blockchain-routes.mjs";
 import transactionRouter from "./blockchain/routes/transaction-routes.mjs";
@@ -49,6 +50,7 @@ app.use("/api/v1/blockchain", blockchainRouter);
 app.use("/api/v1/block", blockRouter);
 app.use("/api/v1/wallet", transactionRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 
 app.all("*", (req, res, next) => {
@@ -56,10 +58,6 @@ app.all("*", (req, res, next) => {
 });  
 app.use(errorHandler);
 
-process.on("unhandledRejection", (err, promise) => {
-    console.log(`Error: ${err.message}`.red);
-    server.close(() => process.exit(1));
-});
 
 const synchronizeNetwork = async () => {
     let response = await fetch(`${ROOT_NODE}/api/v1/blockchain`);
@@ -82,11 +80,16 @@ if (process.env.GENERATE_NODE_PORT === "true") {
         
 const PORT = NODE_PORT || DEFAULT_PORT;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 
     if (PORT !== DEFAULT_PORT) {
         synchronizeNetwork();
     }
+});
+
+process.on("unhandledRejection", (err, promise) => {
+    console.log(`Error: ${err.message}`.red);
+    server.close(() => process.exit(1));
 });
 
