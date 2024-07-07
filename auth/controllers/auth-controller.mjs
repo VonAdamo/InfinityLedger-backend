@@ -41,35 +41,84 @@ export const login = asyncHandler(async( req, res, next ) => {
 // @route   GET /api/v1/auth/me
 // @access  PRIVATE
 export const getMe = asyncHandler(async( req, res, next ) => {
+    const user = await User.findById(req.user.id);
 
+    res.status(200).json({ success: true, statusCode: 200, data: user});
 });
 
 // @desc    Update user details
 // @route   PUT /api/v1/auth/updateuser
 // @access  PRIVATE
 export const updateUserDetails = asyncHandler(async( req, res, next ) => {
+    const fieldsToUpdate = {
+        name: req.body.name,
+        email: req.body.email,
+    };
 
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(200).json({ success: true, statusCode: 200, data: user});
 });
 
 // @desc    Update password
 // @route   PUT /api/v1/auth/updatepassword
 // @access  PRIVATE
 export const updatePassword = asyncHandler(async( req, res, next ) => {
+    const user = await User.findById(req.user.id).select("+password");
 
+    if (!(await user.validatePassword(req.body.currentPassword))) {
+        return next(new ErrorResponse("Password is incorrect", 401));
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    createAndSendToken(user, 200, res);
 });
 
 // @desc    Forgot password
 // @route   POST /api/v1/auth/forgotpassword
 // @access  PUBLIC
 export const forgotPassword = asyncHandler(async( req, res, next ) => {
+    const email = req.body.email;
 
+    if (!email) {
+        return next(new ErrorResponse("Please provide an email", 400));
+    }
+
+    let user = await User.findOne({ email });
+
+    if(!user) return next (new ErrorResponse(`No user with email ${email}`, 404));
+
+    const resetToken = user.createResetPasswordToken();
+
+    await user.save({ validateBeforeSave: false });
+
+    const resetUrl = ` ${req.protocol}://${req.get("host")}/api/v1/auth/resetpassword/${resetToken}`;
+
+    res.status(200).json({ success: true, statusCode: 201, data: { token: resetToken, url: resetUrl }});
 });
 
 // @desc    Reset password
 // @route   PUT /api/v1/auth/resetpassword/:token
 // @access  PUBLIC
 export const resetPassword = asyncHandler(async( req, res, next ) => {
+    const password = req.body.password;
+    const token = req.params.token;
 
+    if(!password) return next(new ErrorResponse("Please provide a password", 400));
+
+    let user = await User.findOne({ resetPasswordToken: token });
+    
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    createAndSendToken(user, 200, res);
 });
 
 export const createAndSendToken = (user, statusCode, res) => {

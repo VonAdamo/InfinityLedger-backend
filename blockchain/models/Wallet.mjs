@@ -9,28 +9,30 @@ export default class Wallet {
         this.publicKey = this.keyPair.getPublic().encode("hex");
     }
 
-    static calculateBalance({ chain, address }) {
-        let total = STARTING_BALANCE;
-        let sentTransaction = false;
+    static calculateBalance({chain, address}) {
+        let total = 0;
+        let hasConductedTransaction = false;
     
         for (let i = chain.length - 1; i > 0; i--) {
-            const block = chain[i];
-            for (let transaction of block.data) {
-                // Check if the address has sent a transaction
-                if (transaction.inputMap.address === address) {
-                    sentTransaction = true;
-                    // Subtract the total output values of the transaction (amount sent)
-                    total -= transaction.inputMap.amount;
-                }
-                // Check if the address is a recipient in the transaction
-                if (transaction.outputMap[address]) {
-                    total += transaction.outputMap[address];
-                }
-            }
-        }
+          const block = chain[i];
+          for (let transaction of block.data) {
     
-        return total;
-    }
+            if (transaction.inputMap.address === address) {
+              hasConductedTransaction = true;
+            }
+            const value = transaction.outputMap[address];
+    
+            if (value) {
+              total += value;
+            }
+          }
+    
+          if(hasConductedTransaction === true) {
+            break;
+          }
+        }
+        return hasConductedTransaction ? total : STARTING_BALANCE + total;
+      };
 
     createTransaction({ recipient, amount, chain }) {
         if (chain) {
