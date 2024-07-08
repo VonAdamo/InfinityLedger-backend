@@ -10,6 +10,8 @@ export const register = asyncHandler(async( req, res, next ) => {
 
     const user = await User.create({ name, email, password, role });
 
+    console.log(user);
+
     createAndSendToken(user, 201, res);
 });
 

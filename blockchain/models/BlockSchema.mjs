@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
-import Block from "../models/Block.mjs";
+import Block from "./Block.mjs";
 
 const blockSchema = new mongoose.Schema({
     timestamp: {
         type: Date,
+        default: Date.now(),
         required: true,
     },
     blockIndex: {
