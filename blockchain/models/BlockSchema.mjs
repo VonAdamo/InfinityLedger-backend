@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Block from "./Block.mjs";
 
 const blockSchema = new mongoose.Schema({
     timestamp: {
@@ -33,4 +32,4 @@ const blockSchema = new mongoose.Schema({
     },
 })
 
-export default mongoose.model("Square", blockSchema);
+export default mongoose.model("Block", blockSchema);

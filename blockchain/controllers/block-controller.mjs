@@ -1,5 +1,5 @@
 import { blockchain, pubnubServer } from "../../server.mjs"
-import Square from "../models/BlockSchema.mjs"
+import Block from "../models/BlockSchema.mjs"
 import { asyncHandler } from "../../auth/middleware/asyncHandler.mjs";
 
 //@desc    Mine a block
@@ -10,7 +10,7 @@ export const mineBlock = asyncHandler (async ( req, res, next) => {
     
     const block = blockchain.addBlock({ data: data});
     
-    const savedBlock = await Square.create(block);
+    const savedBlock = await Block.create(block);
 
     pubnubServer.broadcastChain();
 
