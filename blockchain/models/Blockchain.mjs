@@ -24,9 +24,44 @@ export default class Blockchain {
     replaceChain(chain) {
         if (chain.length <= this.chain.length) return;
         if (!Blockchain.isValidChain(chain)) return;
+
+        if (shouldValidate && !this.validateTransactionData({ chain })) return;
+
+        if (callback) callback();
         
         this.chain = chain;
     }
+
+    validateTransactionData({ chain }) {
+
+        for (let i = 1; i < chain.length; i++) {
+            const block = chain[i];
+            const transactionSet = new Set();
+            let counter = 0;
+
+            for (let transaction of block.data) {
+
+                if (transaction.inputMap.address === REWARD_ADDRESS.address) {
+                    counter ++;
+
+                    if (counter > 1) return false;
+
+                    if (Object.values(transaction.outputMap)[0] !== MINING_REWARD) return false;
+                } else {
+                    if (!Transaction.validate(transaction)) {
+                        return false;
+                    }
+            
+                    if (transactionSet.has(Transaction)) {
+                        return false;
+                    } else {
+                        transactionSet.add(Transaction);
+                    }
+                }
+            }
+        }
+        return true;
+    };
 
     static isValidChain(chain) {
         if (!this.isValidGenesis(chain[0])) {

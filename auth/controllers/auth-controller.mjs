@@ -9,7 +9,6 @@ export const register = asyncHandler(async( req, res, next ) => {
     const { name, email, password, role } = req.body;
 
     const user = await User.create({ name, email, password, role });
-
     console.log(user);
 
     createAndSendToken(user, 201, res);
@@ -43,7 +42,7 @@ export const login = asyncHandler(async( req, res, next ) => {
 // @route   GET /api/v1/auth/me
 // @access  PRIVATE
 export const getMe = asyncHandler(async( req, res, next ) => {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id)/* .poulate("transactions?") */;
 
     res.status(200).json({ success: true, statusCode: 200, data: user});
 });

@@ -53,8 +53,8 @@ export default class Transaction {
     createOutputMap ({ sender, recipient, amount}) {
         const outputMap = {};
 
-        outputMap[sender.publicKey] = sender.balance - amount;
         outputMap[recipient] = amount;
+        outputMap[sender.publicKey] = sender.balance - amount;
 
         return outputMap;
     }

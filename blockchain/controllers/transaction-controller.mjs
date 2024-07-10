@@ -38,7 +38,7 @@ export const getTransactionPool = ( req, res, next) => {
 //@access  PRIVATE
 export const getWalletBalance = ( req, res, next) => {
     const address = wallet.publicKey;
-    const balance = Wallet.calculateBalance({ chain: blockchain, address}); //blockchain.chain
+    const balance = Wallet.calculateBalance({ chain: blockchain.chain, address});
 
     res.status(200).json({ success: true, statusCode: 200, data: {address: address, balance: balance,}});
 };

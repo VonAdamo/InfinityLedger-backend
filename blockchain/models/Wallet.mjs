@@ -11,14 +11,14 @@ export default class Wallet {
 
     static calculateBalance({chain, address}) {
         let total = 0;
-        let hasConductedTransaction = false;
+        let hasAddedTransaction = false;
     
         for (let i = chain.length - 1; i > 0; i--) {
           const block = chain[i];
           for (let transaction of block.data) {
     
             if (transaction.inputMap.address === address) {
-              hasConductedTransaction = true;
+              hasAddedTransaction = true;
             }
             const value = transaction.outputMap[address];
     
@@ -27,12 +27,11 @@ export default class Wallet {
             }
           }
     
-          if(hasConductedTransaction === true) {
-            break;
-          }
+          if (hasAddedTransaction) break;
         }
-        return hasConductedTransaction ? total : STARTING_BALANCE + total;
-      };
+
+      return hasAddedTransaction ? total : STARTING_BALANCE + total;
+    };
 
     createTransaction({ recipient, amount, chain }) {
         if (chain) {
