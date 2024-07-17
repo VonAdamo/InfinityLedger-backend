@@ -11,7 +11,7 @@ export default class Miner {
     }
 
     mineTransactions() {
-        const validTransactions = this.transactionPool.validTransactions();
+        const validTransactions = this.transactionPool.validateTransactions();
 
         validTransactions.push(
             Transaction.transactionReward ({ miner: this.wallet})

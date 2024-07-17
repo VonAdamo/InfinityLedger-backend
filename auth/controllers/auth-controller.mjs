@@ -1,12 +1,14 @@
 import User from "../models/UserModel.mjs";
 import ErrorResponse from "../models/ErrorResponseModel.mjs";
 import {asyncHandler} from "../middleware/asyncHandler.mjs";
+import jwt from "jsonwebtoken";
 
 // @desc    Register a new user
 // @route   POST /api/v1/auth/register
 // @access  PUBLIC
 export const register = asyncHandler(async( req, res, next ) => {
     const { name, email, password, role } = req.body;
+    console.log(req.body);
 
     const user = await User.create({ name, email, password, role });
     console.log(user);
