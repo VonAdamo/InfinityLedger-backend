@@ -1,6 +1,4 @@
 import Transaction from "../models/Transaction.mjs";
-import Block from "../models/BlockSchema.mjs";
-import { asyncHandler } from "../../auth/middleware/asyncHandler.mjs";
 
 export default class Miner {
     constructor ({ blockchain, wallet, transactionPool, pubsub}) {

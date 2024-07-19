@@ -1,7 +1,7 @@
 import User from "../models/UserModel.mjs";
+import Wallet from "../../blockchain/models/Wallet.mjs";
 import ErrorResponse from "../models/ErrorResponseModel.mjs";
 import {asyncHandler} from "../middleware/asyncHandler.mjs";
-import jwt from "jsonwebtoken";
 
 // @desc    Register a new user
 // @route   POST /api/v1/auth/register
@@ -10,7 +10,17 @@ export const register = asyncHandler(async( req, res, next ) => {
     const { name, email, password, role } = req.body;
     console.log(req.body);
 
-    const user = await User.create({ name, email, password, role });
+    const wallet = new Wallet();
+    console.log(wallet);
+
+    const user = await User.create({ 
+        name, 
+        email, 
+        password, 
+        role,
+        walletPublicKey: wallet.publicKey,
+        walletBalance: wallet.balance, 
+    });
     console.log(user);
 
     createAndSendToken(user, 201, res);

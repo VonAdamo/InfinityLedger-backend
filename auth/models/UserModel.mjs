@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { wallet } from '../../server.mjs';
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -18,6 +19,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["user", "moderator"],
         default: "user",
+    },
+    walletPublicKey: {
+        type: String,
+        required: true,
+    },
+    walletBalance: {
+        type: Number,
+        required: true,
+        default: 1000,
     },
     password: {
         type: String,

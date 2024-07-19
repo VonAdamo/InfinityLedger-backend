@@ -22,6 +22,7 @@ export const addTransaction = ( req, res, next) => {
     }
     transactionPool.addTransaction(transaction);
     pubnubServer.broadcastTransaction(transaction);
+    console.log ("addTransaction", transaction)
 
     res.status(201).json({ success: true, statusCode: 201, data: transaction});
 };
@@ -48,7 +49,7 @@ export const getWalletBalance = ( req, res, next) => {
 //@route   GET /api/v1/wallet/mine
 //@access  PRIVATE
 export const mineTransactions = ( req, res, next) => {
-    const miner = new Miner({ blockchain, wallet, transactionPool, pubsub: pubnubServer})
+    const miner = new Miner({ blockchain, transactionPool, wallet, pubsub: pubnubServer})
 
     miner.mineTransactions();
 
