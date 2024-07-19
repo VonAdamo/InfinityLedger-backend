@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { wallet } from '../../server.mjs';
 
 const userSchema = new mongoose.Schema({
     name: {

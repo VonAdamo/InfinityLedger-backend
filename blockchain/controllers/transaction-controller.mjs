@@ -1,6 +1,7 @@
 import { transactionPool, wallet, blockchain, pubnubServer} from "../../server.mjs";
 import Miner from "../models/Miner.mjs";
 import Wallet from "../models/Wallet.mjs";
+import UserModel from "../../auth/models/UserModel.mjs";
 
 
 //@desc    Add a transaction
@@ -9,7 +10,10 @@ import Wallet from "../models/Wallet.mjs";
 export const addTransaction = ( req, res, next) => {
     const { amount, recipient} = req.body;
 
+    console.log("addTransaction", req.body)
+
     let transaction = transactionPool.transactionExists({ address: wallet.publicKey});
+    console.log("address: ", wallet.publicKey)
 
     try {
         if (transaction) {
