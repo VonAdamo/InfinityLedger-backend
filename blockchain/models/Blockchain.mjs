@@ -21,14 +21,14 @@ export default class Blockchain {
         return this.chain.at(-1);
     }
 
-    replaceChain(chain) {
+    replaceChain(chain, shouldValidate = false, callback) {
         if (chain.length <= this.chain.length) return;
         if (!Blockchain.isValidChain(chain)) return;
 
         if (shouldValidate && !this.validateTransactionData({ chain })) return;
 
         if (callback) callback();
-        
+
         this.chain = chain;
     }
 
@@ -52,10 +52,10 @@ export default class Blockchain {
                         return false;
                     }
             
-                    if (transactionSet.has(Transaction)) {
+                    if (transactionSet.has(transaction)) {
                         return false;
                     } else {
-                        transactionSet.add(Transaction);
+                        transactionSet.add(transaction);
                     }
                 }
             }
